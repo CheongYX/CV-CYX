@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheong Yee Xin - AI Engineer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        dark: '#0f172a',
+                        card: '#1e293b',
+                        primary: '#6366f1',
+                        secondary: '#14b8a6'
+                    },
+                    animation: {
+                        'blob': 'blob 7s infinite',
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        blob: {
+                            '0%': { transform: 'translate(0px, 0px) scale(1)' },
+                            '33%': { transform: 'translate(30px, -50px) scale(1.1)' },
+                            '66%': { transform: 'translate(-20px, 20px) scale(0.9)' },
+                            '100%': { transform: 'translate(0px, 0px) scale(1)' },
+                        },
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            background-color: #0f172a;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0f172a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #475569; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #6366f1; 
+        }
+
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            color: #6366f1;
+            font-weight: 600;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #6366f1;
+            border-radius: 2px;
+        }
+
+        .project-card {
+            transition: all 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+            border-color: #6366f1;
+        }
+
+        .timeline-dot {
+            box-shadow: 0 0 0 4px #0f172a;
+        }
+
+        /* Reveal animation classes */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.8s ease-out;
+        }
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 3D Flip Card CSS */
+        .flip-container {
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flip-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .flip-container.flipped .flip-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-front, .flip-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1rem;
+            overflow: hidden;
+        }
+        .flip-back {
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-primary selection:text-white relative">
+
+    <div class="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-primary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob"></div>
+        <div class="absolute top-[20%] right-[-10%] w-96 h-96 bg-secondary/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-20%] left-[20%] w-96 h-96 bg-purple-500/20 rounded-full mix-blend-multiply filter blur-3xl opacity-70 animate-blob animation-delay-4000"></div>
+    </div>
+
+    <header class="fixed w-full top-0 z-40 transition-all duration-300" id="navbar">
+        <div class="glass mx-auto px-6 py-4 md:px-12 flex justify-between items-center border-b-0 border-white/5">
+            <a href="#home" class="text-xl font-bold tracking-tighter text-white flex items-center gap-2">
+                <!-- 修改左上角小头像：改为漫画版 -->
+                <img src="./images/comicCYX.png" alt="YX" class="w-8 h-8 rounded-full object-cover border-2 border-primary/50 shadow-sm shadow-primary/20 bg-slate-800">
+                Cheong Yee Xin
+            </a>
+            
+            <!-- Desktop Nav -->
+            <nav class="hidden md:flex gap-8">
+                <a href="#home" class="nav-link relative text-sm text-slate-300 hover:text-white transition-colors py-1 active">Home</a>
+                <a href="#education" class="nav-link relative text-sm text-slate-300 hover:text-white transition-colors py-1">Education</a>
+                <a href="#experience" class="nav-link relative text-sm text-slate-300 hover:text-white transition-colors py-1">Experience</a>
+                <a href="https://cheongyx.github.io/" target="_blank" class="nav-link relative text-sm text-slate-300 hover:text-white transition-colors py-1">Projects <i class="fas fa-external-link-alt text-[10px] ml-1"></i></a>
+            </nav>
+
+            <!-- Mobile Menu Button -->
+            <button class="md:hidden text-slate-300 hover:text-white focus:outline-none" id="mobile-menu-btn">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </div>
+        
+        <!-- Mobile Nav -->
+        <div class="md:hidden hidden glass absolute top-full left-0 w-full flex-col border-t border-white/10" id="mobile-menu">
+            <a href="#home" class="px-6 py-4 border-b border-white/5 text-slate-300 hover:text-white hover:bg-white/5">Home</a>
+            <a href="#education" class="px-6 py-4 border-b border-white/5 text-slate-300 hover:text-white hover:bg-white/5">Education</a>
+            <a href="#experience" class="px-6 py-4 border-b border-white/5 text-slate-300 hover:text-white hover:bg-white/5">Experience</a>
+            <a href="https://cheongyx.github.io/" target="_blank" class="px-6 py-4 text-slate-300 hover:text-white hover:bg-white/5 flex items-center justify-between">
+                Projects <i class="fas fa-external-link-alt text-xs"></i>
+            </a>
+        </div>
+    </header>
+
+    <main class="pt-24 md:pt-32 pb-16 px-6 md:px-12 max-w-6xl mx-auto space-y-32">
+        
+        <!-- Home Section -->
+        <section id="home" class="min-h-[80vh] flex flex-col md:flex-row items-center justify-center gap-12 pt-10">
+            <div class="flex-1 space-y-6 text-center md:text-left z-10 animate-fade-in-up">
+                <div class="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 text-sm font-medium mb-2">
+                    <i class="fas fa-robot mr-2"></i>AI Engineering Professional
+                </div>
+                <h1 class="text-5xl md:text-7xl font-bold text-white tracking-tight leading-tight">
+                    Hello, I'm <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-secondary">Cheong Yee Xin</span>
+                </h1>
+                <h2 class="text-2xl md:text-3xl font-medium text-slate-400">章育欣</h2>
+                <p class="text-lg text-slate-300 max-w-2xl mx-auto md:mx-0 leading-relaxed">
+                    Bachelor of Science in Artificial Intelligence. Passionate about machine learning, neural networks, embedded systems, and solving real-world problems through innovative AI solutions.
+                </p>
+                
+                <div class="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-4">
+                    <a href="https://cheongyx.github.io/" target="_blank" class="px-6 py-3 rounded-lg bg-primary hover:bg-indigo-600 text-white font-medium transition-colors shadow-lg shadow-primary/25 flex items-center gap-2">
+                        View My Work <i class="fas fa-arrow-right"></i>
+                    </a>
+                    <!-- 修改了这里：将 a 标签改为 button，并添加 onclick="openModal()" -->
+                    <button onclick="openModal()" class="px-6 py-3 rounded-lg bg-card hover:bg-slate-700 text-white font-medium transition-colors border border-white/10 flex items-center gap-2">
+                        <i class="fas fa-envelope"></i> Contact Me
+                    </button>
+                </div>
+
+                <div class="flex items-center justify-center md:justify-start gap-6 pt-6 text-slate-400">
+                    <a href="https://cheongyx.github.io/" target="_blank" class="hover:text-white transition-colors text-2xl" title="Website/GitHub"><i class="fas fa-globe"></i></a>
+                    <a href="https://www.linkedin.com/in/yx-cheong" target="_blank" class="hover:text-[#0a66c2] transition-colors text-2xl" title="LinkedIn"><i class="fab fa-linkedin"></i></a>
+                    <a href="tel:+601117606688" class="hover:text-green-400 transition-colors text-2xl" title="Phone"><i class="fas fa-phone-alt"></i></a>
+                </div>
+            </div>
+            
+            <div class="flex-1 flex justify-center md:justify-end z-10 animate-fade-in-up" style="animation-delay: 0.2s;">
+                <!-- 3D 翻转卡片容器 (添加 onclick 事件) -->
+                <div class="flip-container relative w-64 h-64 md:w-80 md:h-80 rotate-3 hover:rotate-0 transition-transform duration-500" onclick="this.classList.toggle('flipped')" title="Click to flip!">
+                    <!-- 修复 3D Bug: 移除这里的 glass 特效，防止它破坏浏览器的 3D 渲染 -->
+                    <div class="flip-inner w-full h-full">
+                        
+                        <!-- Front 面：这是网页刚加载时显示的正面 (翻转前) -->
+                        <div class="flip-front glass p-2 rounded-2xl shadow-xl top-0 left-0">
+                            <!-- 翻转前：显示卡通头像 -->
+                            <img src="./images/comicCYX.png" alt="Cheong Yee Xin - Cartoon" class="w-full h-full object-cover rounded-xl">
+                            
+                            <!-- 悬浮提示小气泡 -->
+                            <div class="absolute bottom-4 right-4 bg-dark/80 px-3 py-1.5 rounded-full text-xs text-white backdrop-blur-sm border border-white/20 flex items-center gap-2 animate-bounce shadow-lg">
+                                <i class="fas fa-hand-pointer text-primary"></i> Click me!
+                            </div>
+                        </div>
+
+                        <!-- Back 面：这是点击后翻转过来的背面 (翻转后) -->
+                        <div class="flip-back glass p-2 rounded-2xl shadow-xl top-0 left-0 bg-slate-800">
+                            <!-- 翻转后：显示真实照片 -->
+                            <img src="./images/CYX.jpg" alt="Cheong Yee Xin - Photo" class="w-full h-full object-cover rounded-xl">
+                        </div>
+
+                    </div>
+                    
+                    <!-- Decorative elements (放置在 flip-inner 外面，保证不跟着一起翻转) -->
+                    <div class="absolute -bottom-4 -right-4 w-24 h-24 bg-secondary/50 blur-2xl rounded-full -z-10 pointer-events-none"></div>
+                    <div class="absolute -top-4 -left-4 w-24 h-24 bg-primary/50 blur-2xl rounded-full -z-10 pointer-events-none"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="education" class="scroll-mt-24 reveal">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="w-12 h-12 rounded-lg bg-card flex items-center justify-center text-primary text-xl border border-white/5">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Education</h2>
+            </div>
+
+            <div class="relative border-l border-slate-700 ml-6 md:ml-8 space-y-12">
+                
+                <!-- Education Item 1 & 2 Combined -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute w-4 h-4 bg-primary rounded-full -left-[9px] top-1 timeline-dot ring-4 ring-dark"></div>
+                    <div class="glass p-6 rounded-xl border border-white/5 hover:border-primary/30 transition-colors">
+                        <h3 class="text-xl font-bold text-white">Beijing Institute of Technology (BIT)</h3>
+                        
+                        <div class="mt-4 border-l-2 border-slate-700 pl-4 relative">
+                            <div class="absolute w-2 h-2 bg-primary/50 rounded-full -left-[5px] top-2"></div>
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 gap-1">
+                                <div class="text-primary font-medium text-sm">Bachelor of Science - Artificial Intelligence</div>
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 whitespace-nowrap">Sep 2020 - Mar 2026</span>
+                            </div>
+                            <ul class="space-y-2 text-slate-300 text-sm list-disc list-inside mb-4">
+                                <li><span class="text-white font-medium">Award:</span> BIT Freshmen Scholarship (Partial Scholarship)</li>
+                                <li><span class="text-white font-medium">Role:</span> Consultant of International Student Affairs</li>
+                            </ul>
+                        </div>
+
+                        <div class="border-l-2 border-slate-700 pl-4 relative">
+                            <div class="absolute w-2 h-2 bg-secondary/50 rounded-full -left-[5px] top-2"></div>
+                            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mb-1 gap-1">
+                                <div class="text-primary font-medium text-sm">Foundation in Science</div>
+                                <span class="text-xs font-medium px-2 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 whitespace-nowrap">Sep 2020 - Jul 2020</span>
+                            </div>
+                            <ul class="space-y-2 text-slate-300 text-sm list-disc list-inside">
+                                <li><span class="text-white font-medium">Role:</span> Student Representative</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Education Item 3 -->
+                <div class="relative pl-8 md:pl-12">
+                    <div class="absolute w-4 h-4 bg-slate-500 rounded-full -left-[9px] top-1 timeline-dot ring-4 ring-dark"></div>
+                    <div class="glass p-6 rounded-xl border border-white/5 hover:border-purple-400/30 transition-colors">
+                        <h3 class="text-xl font-bold text-white">Chung Ling Private High School (CLPHS)</h3>
+                        <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start mt-1 mb-3 gap-1">
+                            <div class="text-primary font-medium text-sm">IGCSE in Science</div>
+                            <span class="text-xs font-medium px-2 py-1 rounded-full bg-primary/10 text-primary border border-primary/20 whitespace-nowrap">Jan 2015 - Nov 2019</span>
+                        </div>
+                        <ul class="space-y-2 text-slate-300 text-sm list-disc list-inside">
+                            <li><span class="text-white font-medium">Grade:</span> 3A*, 4A</li>
+                            <li><span class="text-white font-medium">Award:</span> The Best Service Corp Member in the year 2019</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </section>
+
+        <section id="skills" class="scroll-mt-24 reveal">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="w-12 h-12 rounded-lg bg-card flex items-center justify-center text-teal-400 text-xl border border-white/5">
+                    <i class="fas fa-tools"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Technical Skills</h2>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="glass p-6 rounded-xl border border-white/5 hover:border-teal-400/30 transition-colors">
+                    <h3 class="text-lg font-bold text-teal-400 mb-4"><i class="fas fa-code mr-2"></i>Programming</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">Python</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">C++</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">Java</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">Verilog</span>
+                    </div>
+                </div>
+
+                <div class="glass p-6 rounded-xl border border-white/5 hover:border-teal-400/30 transition-colors">
+                    <h3 class="text-lg font-bold text-teal-400 mb-4"><i class="fas fa-brain mr-2"></i>Machine Learning / AI</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">PyTorch</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">TensorFlow</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">Deep Learning</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">CNN</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">GAN</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">Transformer</span>
+                    </div>
+                </div>
+
+                <div class="glass p-6 rounded-xl border border-white/5 hover:border-teal-400/30 transition-colors">
+                    <h3 class="text-lg font-bold text-teal-400 mb-4"><i class="fas fa-eye mr-2"></i>Computer Vision</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">OpenCV</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">Image Processing</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">Object Detection</span>
+                    </div>
+                </div>
+
+                <div class="glass p-6 rounded-xl border border-white/5 hover:border-teal-400/30 transition-colors">
+                    <h3 class="text-lg font-bold text-teal-400 mb-4"><i class="fas fa-database mr-2"></i>Data & Tools</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">Microsoft Excel</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">SQL</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">Git</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">Linux</span>
+                    </div>
+                </div>
+
+                <div class="glass p-6 rounded-xl border border-white/5 hover:border-teal-400/30 transition-colors">
+                    <h3 class="text-lg font-bold text-teal-400 mb-4"><i class="fas fa-microchip mr-2"></i>System</h3>
+                    <div class="flex flex-wrap gap-2">
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">FPGA</span>
+                        <span class="px-3 py-1 bg-white/5 rounded-full text-sm text-slate-300 border border-white/10">Embedded Systems</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="experience" class="scroll-mt-24 reveal">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="w-12 h-12 rounded-lg bg-card flex items-center justify-center text-purple-400 text-xl border border-white/5">
+                    <i class="fas fa-briefcase"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Work Experience</h2>
+            </div>
+
+            <div class="space-y-6">
+                
+                <!-- WOU -->
+                <div class="glass p-6 rounded-xl border border-white/5 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-5xl">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="flex justify-between items-start mb-4 flex-col sm:flex-row gap-2">
+                        <div>
+                            <h3 class="text-xl font-bold text-white">AI Transformation Associate</h3>
+                            <p class="text-purple-400 font-medium text-sm">Wawasan Open University (WOU)</p>
+                            <p class="text-xs text-slate-400 mt-1"><i class="fas fa-map-marker-alt mr-1"></i> Georgetown, Penang, Malaysia</p>
+                        </div>
+                        <span class="text-xs font-medium px-3 py-1 rounded-full bg-purple-400/10 text-purple-400 border border-purple-400/20 whitespace-nowrap">Jun 2026 - Present</span>
+                    </div>
+                    <ul class="space-y-2 text-slate-300 text-sm list-disc list-inside">
+                        <li>Contract role focusing on integrating AI transformation initiatives across university operations.</li>
+                    </ul>
+                </div>
+
+                <!-- TooTaio Studio -->
+                <div class="glass p-6 rounded-xl border border-white/5 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-5xl">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <div class="flex justify-between items-start mb-4 flex-col sm:flex-row gap-2">
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Co-Founder, Developer</h3>
+                            <p class="text-purple-400 font-medium text-sm">TooTaio Studio</p>
+                            <p class="text-xs text-slate-400 mt-1"><i class="fas fa-map-marker-alt mr-1"></i> Malaysia</p>
+                        </div>
+                        <span class="text-xs font-medium px-3 py-1 rounded-full bg-purple-400/10 text-purple-400 border border-purple-400/20 whitespace-nowrap">Sep 2022 - Present</span>
+                    </div>
+                    <ul class="space-y-2 text-slate-300 text-sm list-disc list-inside">
+                        <li>Developed an interactive guide helping over 5,000 students return to mainland China during COVID-19 (2022).</li>
+                        <li>Designed and implemented system architecture and core functionality.</li>
+                    </ul>
+                </div>
+
+                <!-- IT Cheong & Co (Full Width) -->
+                <div class="glass p-6 rounded-xl border border-white/5 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-8xl">
+                        <i class="fas fa-network-wired"></i>
+                    </div>
+                    <div class="mb-5">
+                        <h3 class="text-xl font-bold text-white">I.T. CHEONG & CO.</h3>
+                        <p class="text-xs text-slate-400 mt-1"><i class="fas fa-map-marker-alt mr-1"></i> Penang, Malaysia</p>
+                    </div>
+                    
+                    <div class="flex flex-col space-y-6 relative z-10">
+                        <!-- Role 1 -->
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="text-lg font-bold text-purple-400">Digitalisation Facilitator</h4>
+                                <span class="text-xs font-medium px-3 py-1 rounded-full bg-purple-400/10 text-purple-400 border border-purple-400/20 whitespace-nowrap">Feb 2026 - Jun 2026</span>
+                            </div>
+                            <ul class="space-y-2 text-slate-300 text-sm list-disc list-outside ml-4 mb-3">
+                                <li>Designed and implemented a standalone desktop data cataloging tool using  (Tkinter, openpyxl), successfully extracting and structuring 200,000+ historical enterprise files from 15+ legacy storage drives into a centralized Master Excel ecosystem.</li>
+                                <li>Engineered a high-performance directory scanner utilizing a custom Depth-First Search (DFS) stack algorithm, ensuring strict hierarchical tree visual order without recursive limitations.</li>
+                                <li>Developed a dynamic memory-buffering engine that automatically calculates maximum directory depths to generate perfectly aligned, multi-level relational spreadsheets, completely eliminating manual formatting.</li>
+                                <li>Resolved multi-threading GUI lockups by implementing thread-safe local I/O operations, ensuring zero UI lag during massive TB-scale disk scans.</li>
+                                <li>Delivered a 100% zero-cost, dependency-free executable (.exe), safeguarding decades of corporate data locally.</li>
+                            </ul>
+                        </div>
+
+                        <!-- Role 2 -->
+                        <div>
+                            <div class="flex justify-between items-start mb-2">
+                                <h4 class="text-lg font-bold text-purple-400">Audit Assistant</h4>
+                                <span class="text-xs font-medium px-3 py-1 rounded-full bg-purple-400/10 text-purple-400 border border-purple-400/20 whitespace-nowrap">Sep 2025 - Jan 2026</span>
+                            </div>
+                            <ul class="space-y-2 text-slate-300 text-sm list-disc list-outside ml-4 mb-3">
+                                <li>Aid in verifying the company's financial information and documentation.</li>
+                                <li>Experienced in using SQL accounting software for daily audit processes.</li>
+                            </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STEM COACH -->
+                <div class="glass p-6 rounded-xl border border-white/5 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-opacity text-7xl">
+                        <i class="fas fa-chalkboard-teacher"></i>
+                    </div>
+                    <div class="flex justify-between items-start mb-4 flex-col sm:flex-row gap-2">
+                        <div>
+                            <h3 class="text-xl font-bold text-white">STEM COACH</h3>
+                            <p class="text-purple-400 font-medium text-sm">Chung Ling Private High School Penang</p>
+                            <p class="text-xs text-slate-400 mt-1"><i class="fas fa-map-marker-alt mr-1"></i> Penang, Malaysia</p>
+                        </div>
+                        <span class="text-xs font-medium px-3 py-1 rounded-full bg-purple-400/10 text-purple-400 border border-purple-400/20 whitespace-nowrap">Feb 2026 - May 2026</span>
+                    </div>
+                    <ul class="space-y-2 text-slate-300 text-sm list-disc list-outside ml-4 mb-4 relative z-10">
+                        <li>Built a visual logic modeling web application from zero to one to solve a core pedagogical challenge: helping novice students transition from descriptive natural language to structured programming logic.</li>
+                        <li>Architected a node-based visual interface featuring context-aware text parsing, conditional branch generation, and interactive "collision merging" to help students visually group redundant logic.</li>
+                        <li>Successfully reduced the cognitive load for students tackling complex algorithmic concepts (e.g., loops, if-else structures) before transitioning them to write physical hardware code.</li>
+                    </ul>
+                    <div class="inline-block relative z-10">
+                        <span class="text-xs text-yellow-400 flex items-center gap-1 bg-yellow-400/10 px-2 py-1 rounded"><i class="fas fa-star"></i> Received Testimonial from CLPHS</span>
+                    </div>
+                </div>
+
+                <!-- Student Assistant -->
+                <div class="glass p-6 rounded-xl border border-white/5 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-5xl">
+                        <i class="fas fa-hands-helping"></i>
+                    </div>
+                    <div class="flex justify-between items-start mb-4 flex-col sm:flex-row gap-2">
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Student Assistant</h3>
+                            <p class="text-purple-400 font-medium text-sm">International Students Office, BIT</p>
+                            <p class="text-xs text-slate-400 mt-1"><i class="fas fa-map-marker-alt mr-1"></i> Beijing, China</p>
+                        </div>
+                        <span class="text-xs font-medium px-3 py-1 rounded-full bg-purple-400/10 text-purple-400 border border-purple-400/20 whitespace-nowrap">Oct 2022 - Jun 2023</span>
+                    </div>
+                    <ul class="space-y-2 text-slate-300 text-sm list-disc list-inside">
+                        <li>Supported daily operations and handled student-related matters.</li>
+                        <li>Assisted in communicating policies and providing practical support to international students.</li>
+                    </ul>
+                </div>
+
+                <!-- Trainee -->
+                <div class="glass p-6 rounded-xl border border-white/5 relative overflow-hidden group">
+                    <div class="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity text-5xl">
+                        <i class="fas fa-microchip"></i>
+                    </div>
+                    <div class="flex justify-between items-start mb-4 flex-col sm:flex-row gap-2">
+                        <div>
+                            <h3 class="text-xl font-bold text-white">Trainee (R&D)</h3>
+                            <p class="text-purple-400 font-medium text-sm">Affinex Innovation Sdn. Bhd.</p>
+                            <p class="text-xs text-slate-400 mt-1"><i class="fas fa-map-marker-alt mr-1"></i> Bayan Lepas, Penang</p>
+                        </div>
+                        <span class="text-xs font-medium px-3 py-1 rounded-full bg-purple-400/10 text-purple-400 border border-purple-400/20 whitespace-nowrap">Jul 2022 - Aug 2022</span>
+                    </div>
+                    <ul class="space-y-2 text-slate-300 text-sm list-disc list-inside">
+                        <li>Xilinx FPGA Zynq7000 development.</li>
+                        <li>Responsible for FPGA timing constraints and RTL writing.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Publications Section -->
+        <section id="publications" class="scroll-mt-24 reveal">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="w-12 h-12 rounded-lg bg-card flex items-center justify-center text-pink-400 text-xl border border-white/5">
+                    <i class="fas fa-book-open"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Publications</h2>
+            </div>
+
+            <div class="glass p-6 md:p-8 rounded-xl border border-white/5 relative overflow-hidden group hover:border-pink-500/30 transition-colors">
+                <div class="absolute top-0 right-0 p-6 opacity-5 group-hover:opacity-10 transition-opacity text-8xl">
+                    <i class="fas fa-quote-right"></i>
+                </div>
+                <div class="flex flex-col lg:flex-row lg:justify-between lg:items-start gap-6 mb-6 relative z-10">
+                    <div class="flex-1">
+                        <h3 class="text-xl font-bold text-white leading-tight mb-3">Beyond the Tokenization Bottleneck: A Conceptual Framework for Efficiency-Plasticity Trade-Offs in ASEAN Large Language Model Adaptation</h3>
+                        <div class="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 mb-2">
+                            <p class="text-pink-400 font-medium text-sm">Cureus Journal of Engineering</p>
+                            <span class="hidden sm:inline text-slate-500">|</span>
+                            <span class="text-sm text-slate-400"><i class="far fa-calendar-alt mr-1"></i> Mar 30, 2026</span>
+                        </div>
+                        <p class="text-sm text-slate-300">Role: <span class="font-semibold text-white bg-white/10 px-2 py-0.5 rounded ml-1">Co-Author (2nd Author)</span></p>
+                    </div>
+                    <a href="https://www.cureusjournals.com/articles/13958-beyond-the-tokenization-bottleneck-a-conceptual-framework-for-efficiency-plasticity-trade-offs-in-asean-large-language-model-adaptation#!/" target="_blank" class="shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-pink-500/10 hover:bg-pink-500/20 text-pink-400 border border-pink-500/20 rounded-lg transition-all duration-300 text-sm font-medium shadow-sm hover:shadow-pink-500/10">
+                        Show Publication <i class="fas fa-external-link-alt text-xs"></i>
+                    </a>
+                </div>
+                
+                <div class="relative z-10">
+                    <div class="text-sm text-slate-300 leading-relaxed bg-[#0f172a]/60 p-5 md:p-6 rounded-lg border border-white/5 shadow-inner">
+                        <p class="mb-3"><span class="text-pink-400 font-semibold mb-1 block">Abstract:</span>This paper proposes a conceptual framework to analyze the fundamental trade-offs in adapting Large Language Models (LLMs) to the linguistic diversity of Southeast Asia. Rather than providing new empirical benchmarks, this analytical review introduces Embedding Sparsity Risk (ESR) as a theoretical diagnostic indicator. ESR serves as a conceptual lens for understanding how aggressive vocabulary expansion may lead to under-trained, inactive embedding parameters (often colloquially referred to as "zombie parameters"). By applying this analytical lens, we systematically evaluate three prevailing adaptation pathways: vocabulary expansion, regional full-stack pre-training, and emerging token-free architectures (e.g., MambaByte, Byte Latent Transformer). Drawing on recent multilingual model reports and tokenizer statistics from regional LLM projects, this review clarifies how hardware constraints, licensing thresholds, and linguistic characteristics intersect to shape deployment strategies. To navigate these challenges, we introduce a tiered adaptation roadmap and an open research agenda, shifting the evaluation focus from simple token fertility reduction to optimizing effective parameter utilization and representational robustness in resource-constrained environments.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="leadership" class="scroll-mt-24 reveal">
+            <div class="flex items-center gap-4 mb-10">
+                <div class="w-12 h-12 rounded-lg bg-card flex items-center justify-center text-orange-400 text-xl border border-white/5">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Leadership & Organization</h2>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Leadership 1 -->
+                <div class="glass p-6 rounded-xl border border-white/5">
+                    <div class="flex justify-between items-start mb-2 flex-col sm:flex-row gap-2">
+                        <h3 class="text-xl font-bold text-white">International Student Affairs Consultant</h3>
+                        <span class="text-xs font-medium px-3 py-1 rounded-full bg-slate-700 text-slate-300">Dec 2023 - Jun 2025</span>
+                    </div>
+                    <div class="text-orange-400 font-medium text-sm mb-3">Beijing Institute of Technology</div>
+                    <ul class="space-y-2 text-slate-300 text-sm list-disc list-inside">
+                        <li>Advised the International Student Affairs Office on student-related matters.</li>
+                        <li>Provided input on policies affecting international students.</li>
+                        <li>Acted as a liaison between the international student body and university administration.</li>
+                        <li>Consolidated student feedback and supported the proposal of practical improvements.</li>
+                    </ul>
+                </div>
+
+                <!-- Leadership 2 -->
+                <div class="glass p-6 rounded-xl border border-white/5">
+                    <div class="flex justify-between items-start mb-2 flex-col sm:flex-row gap-2">
+                        <h3 class="text-xl font-bold text-white">Student Assistant</h3>
+                        <span class="text-xs font-medium px-3 py-1 rounded-full bg-slate-700 text-slate-300">Sep 2022 - Jan 2023</span>
+                    </div>
+                    <div class="text-orange-400 font-medium text-sm mb-3">Ministry of Foreign Affairs (MFA) Malaysia & Malaysia Airlines Task Force</div>
+                    <ul class="space-y-2 text-slate-300 text-sm list-disc list-inside">
+                        <li>Collaborated directly with MFA and Malaysia Airlines to facilitate the complex return logistics for Malaysian students heading to China during the pandemic.</li>
+                        <li>Managed data processing systems created by Founder of Tootaio Studio to centralize student information, flight manifests, and quarantine documentation.</li>
+                        <li>Coordinated on-the-ground order and guided students throughout the journey until the completion of mandatory quarantine in China.</li>
+                        <li>Conducted daily progress tracking of all students and served as the primary liaison with the Consulate General of Malaysia in Shanghai to resolve critical and emergent issues.</li>
+                    </ul>
+                    <div class="mt-4 relative z-10">
+                        <a href="https://drive.google.com/file/d/1UElWHKfIbTBB0nLyzJSiA5nTbcAEpDcM/view?usp=sharing" target="_blank" class="inline-flex items-center gap-2 text-xs text-yellow-400 bg-yellow-400/10 border border-yellow-400/20 hover:bg-yellow-400/20 transition-all duration-200 px-3 py-1.5 rounded-lg shadow-sm group">
+                            <i class="fas fa-certificate text-yellow-400"></i>
+                            <span>Letter of Recommendation from Ministry of Foreign Affairs Malaysia</span>
+                            <i class="fas fa-external-link-alt text-[10px] opacity-70 group-hover:opacity-100 transition-opacity"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Leadership 3 -->
+                <div class="glass p-6 rounded-xl border border-white/5">
+                    <div class="flex justify-between items-start mb-2 flex-col sm:flex-row gap-2">
+                        <h3 class="text-xl font-bold text-white">AMSIB Challenge 2023 Public Relations Officer</h3>
+                        <span class="text-xs font-medium px-3 py-1 rounded-full bg-slate-700 text-slate-300">Dec 2022 - Jun 2023</span>
+                    </div>
+                    <div class="text-orange-400 font-medium text-sm mb-3">Association of Malaysian Students in Beijing (AMSIB)</div>
+                    <ul class="space-y-2 text-slate-300 text-sm list-disc list-inside">
+                        <li>Collaborating with one company as a supporting partner.</li>
+                        <li>Successfully invited 8 industry professionals to be preliminary judges.</li>
+                        <li>Developed skills in guest and partner engagement, including identifying targets, drafting invitations, scheduling meetings, and follow-up communication.</li>
+                    </ul>
+                </div>
+
+                <!-- Leadership 4 -->
+                <div class="glass p-6 rounded-xl border border-white/5">
+                    <div class="flex justify-between items-start mb-2 flex-col sm:flex-row gap-2">
+                        <h3 class="text-xl font-bold text-white">Secretary</h3>
+                        <span class="text-xs font-medium px-3 py-1 rounded-full bg-slate-700 text-slate-300">Sep 2022 - Jun 2023</span>
+                    </div>
+                    <div class="text-orange-400 font-medium text-sm mb-3">Malaysian Students Union of Beijing Institute of Technology</div>
+                    <ul class="space-y-2 text-slate-300 text-sm list-disc list-inside">
+                        <li>Managed meeting records, minutes, and internal documentation.</li>
+                        <li>Coordinated communication among committee members.</li>
+                    </ul>
+                </div>
+
+                <!-- Leadership 5 -->
+                <div class="glass p-6 rounded-xl border border-white/5">
+                    <div class="flex justify-between items-start mb-2 flex-col sm:flex-row gap-2">
+                        <h3 class="text-xl font-bold text-white">External Relations Department Officer - Virtual Career Fair (VCF)</h3>
+                        <span class="text-xs font-medium px-3 py-1 rounded-full bg-slate-700 text-slate-300">Nov 2021 - Jun 2022</span>
+                    </div>
+                    <div class="text-orange-400 font-medium text-sm mb-3">Malaysian Students Association in China (MSAC)</div>
+                    <ul class="space-y-2 text-slate-300 text-sm list-disc list-inside">
+                        <li>Established and maintained relationships with external partners and sponsors.</li>
+                        <li>Assisted in organizing a virtual career fair connecting students with employers during pandemic.</li>
+                        <li>Coordinated communication between companies and student participants.</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Honours Section -->
+        <section id="honors" class="scroll-mt-24 reveal">
+            <div class="glass p-8 rounded-xl border border-yellow-500/20 bg-yellow-500/5 flex flex-col sm:flex-row items-center gap-6">
+                <div class="text-5xl text-yellow-500"><i class="fas fa-award"></i></div>
+                <div>
+                    <h2 class="text-xl font-bold text-white mb-2">Honors & Recognition</h2>
+                    <p class="text-slate-300 text-sm"><span class="font-bold text-yellow-400">Letter of Recommendation</span>, Ministry of Foreign Affairs Malaysia</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Referees Section -->
+        <section id="referees" class="scroll-mt-24 reveal">
+            <div class="flex items-center gap-4 mb-8">
+                <div class="w-12 h-12 rounded-lg bg-card flex items-center justify-center text-slate-300 text-xl border border-white/5">
+                    <i class="fas fa-address-book"></i>
+                </div>
+                <h2 class="text-3xl md:text-4xl font-bold text-white">Referees</h2>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="glass p-6 rounded-xl border border-white/5">
+                    <h3 class="text-xl font-bold text-white">Puan Sharifah Ezneeda Wafa binti Syed Mohd Zulkarnain Wafa</h3>
+                    <p class="text-sm text-slate-400 mb-3">Deputy High Commissioner of Malaysia, High Commission of Malaysia in India</p>
+                    <a href="mailto:ezneeda@kln.gov.my" class="text-primary hover:underline text-sm flex items-center gap-2"><i class="fas fa-envelope"></i> ezneeda@kln.gov.my</a>
+                </div>
+                <div class="glass p-6 rounded-xl border border-white/5">
+                    <h3 class="text-xl font-bold text-white">Mr. Ng Jooi Seah</h3>
+                    <p class="text-sm text-slate-400 mb-3">Principal, Chung Ling Private High School</p>
+                    <a href="tel:+60124828211" class="text-primary hover:underline text-sm flex items-center gap-2"><i class="fas fa-phone"></i> +60 12-482 8211</a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- 新增：Contact Modal (联系资料弹窗) -->
+    <div id="contact-modal" class="fixed inset-0 z-50 flex items-center justify-center opacity-0 pointer-events-none transition-opacity duration-300">
+        <!-- 弹窗背景 (点击即可关闭) -->
+        <div class="absolute inset-0 bg-dark/80 backdrop-blur-sm" onclick="closeModal()"></div>
+        
+        <!-- 弹窗卡片主体 -->
+        <div class="glass relative w-[90%] max-w-sm p-8 rounded-2xl border border-white/10 shadow-2xl transform scale-95 transition-transform duration-300" id="contact-card">
+            <button onclick="closeModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white transition-colors focus:outline-none">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+            
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 rounded-full bg-primary/20 text-primary flex items-center justify-center text-2xl mx-auto mb-3 border border-primary/30">
+                    <i class="fas fa-paper-plane"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white">Let's Connect!</h3>
+                <p class="text-sm text-slate-400 mt-1">Feel free to reach out to me.</p>
+            </div>
+            
+            <div class="space-y-4">
+                <!-- Email -->
+                <div class="flex items-center gap-4 p-3 rounded-lg bg-white/5 border border-white/5 hover:border-primary/30 transition-colors group">
+                    <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400">Email</p>
+                        <!-- select-all 类让用户双击/点击就能全选复制 -->
+                        <p class="text-sm font-medium text-white select-all">yxcheong0226@gmail.com</p>
+                    </div>
+                </div>
+                
+                <!-- Phone -->
+                <div class="flex items-center gap-4 p-3 rounded-lg bg-white/5 border border-white/5 hover:border-green-400/30 transition-colors group">
+                    <div class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center text-green-400 group-hover:bg-green-400 group-hover:text-white transition-colors">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div>
+                        <p class="text-xs text-slate-400">Phone</p>
+                        <p class="text-sm font-medium text-white select-all">+60 11-1760 6688</p>
+                    </div>
+                </div>
+
+                <!-- Social Links -->
+                <div class="flex gap-4 mt-6 pt-6 border-t border-white/10 justify-center">
+                    <a href="https://www.linkedin.com/in/yx-cheong" target="_blank" class="w-10 h-10 rounded-full bg-[#0a66c2]/20 flex items-center justify-center text-[#0a66c2] hover:bg-[#0a66c2] hover:text-white transition-all shadow-lg" title="LinkedIn">
+                        <i class="fab fa-linkedin-in"></i>
+                    </a>
+                    <a href="https://cheongyx.github.io/" target="_blank" class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center text-white hover:bg-white hover:text-dark transition-all shadow-lg" title="Website/GitHub">
+                        <i class="fas fa-globe"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-t border-white/10 mt-20 py-8 text-center text-slate-500 text-sm">
+        <p>&copy; 2026 Cheong Yee Xin. All Rights Reserved.</p>
+        <p class="mt-2 text-xs">Built with Tailwind CSS & JavaScript</p>
+    </footer>
+
+    <script>
+        // Scroll spy for navigation
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - 150)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').includes(current)) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Mobile Menu Toggle
+        const btn = document.getElementById('mobile-menu-btn');
+        const menu = document.getElementById('mobile-menu');
+        
+        btn.addEventListener('click', () => {
+            menu.classList.toggle('hidden');
+            menu.classList.toggle('flex');
+        });
+
+        // Close mobile menu on click
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', () => {
+                menu.classList.add('hidden');
+                menu.classList.remove('flex');
+            });
+        });
+
+        // Intersection Observer for scroll animations (reveal elements)
+        const revealElements = document.querySelectorAll('.reveal');
+        
+        const revealObserver = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if(entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        // 新增：Modal 弹窗控制函数
+        function openModal() {
+            const modal = document.getElementById('contact-modal');
+            const card = document.getElementById('contact-card');
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            // 延迟一点点添加缩放动画类，让动画更平滑
+            setTimeout(() => {
+                card.classList.remove('scale-95');
+                card.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('contact-modal');
+            const card = document.getElementById('contact-card');
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+            // 等待卡片缩小动画完成后再隐藏整个背景
+            setTimeout(() => {
+                modal.classList.add('opacity-0', 'pointer-events-none');
+            }, 300);
+        }
+    </script>
+</body>
+</html>
